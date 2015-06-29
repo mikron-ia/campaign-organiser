@@ -1,4 +1,4 @@
-@charset 'UTF-8';
+@charset "UTF-8";
 
 html,body {	min-width:800px;	max-width:1280px;	margin:auto;	}
 
@@ -27,9 +27,6 @@ tr>td:first-of-type	{	text-align:left;	}
 
 th					{	font-weight:bold;	text-align:center;	}
 
-td.tl				{	text-align:left;	}
-td.td-spacer			{	width:1em;	}
-
 p					{	margin-top:0.4em;	margin-bottom:0.4em;	text-indent:0em;	}
 p.linki				{	text-indent:0;	}
 p.version			{	color:#ff7733;	font-family:sans-serif;	font-size:11px;	font-weight:bold;	text-indent:0;	}
@@ -46,37 +43,7 @@ li					{	margin-top:0.4em;	margin-bottom:0.4em;	text-indent:1em;	}
 #bc a				{	color:#008888;	}
 #bc a:hover			{	color:#00AAAA;	}
 
-div.blok			{	display:block; float:left; overflow:none;	}
-div.twosplit 		{	width:48%;	margin:auto;	}
-div.threesplit		{	width:33%;		}
-div.foursplit		{	width:24.25%;	}
-div.fivesplit		{	width:19.5%;	}
-div.sixsplit		{	width:16.5%;	}
-div.sevensplit		{	width:14.15%;	}
-
-div.centerlist		{	text-align:center;	}
-
-div.l2				{	margin-left:0em;	}
-div.l3				{	margin-left:1em;	}
-div.l4				{	margin-left:1em;	}
-div.l5				{	margin-left:1em;	}
-
-div.l2>h2			{	margin-left:0em;		}
-div.l3>h3			{	margin-left:-0.5em;	}
-div.l4>h4			{	margin-left:-0.5em;	}
-div.l5>h5			{	margin-left:-0.5em;	}
-
-div.l2>div>h2		{	margin-left:0em;		}
-div.l3>div>h3		{	margin-left:-0.5em;	}
-div.l4>div>h4		{	margin-left:-0.5em;	}
-div.l5>div>h5		{	margin-left:-0.5em;	}
-	
-#library	h2		{	text-align:center;	}
-#library	div>p	{	text-indent:0;	text-align:center;	margin: 0.8em 0.8em 0.8em 0.8em;	}
-
 div.clear			{	clear:both;	height:0px;	margin-top:2em;	padding:0em;	overflow:hidden;	}
-
-ul.less				{	}	/*	Lista bez bulletów	*/
 
 .new				{	color:#006600;	}
 .newest				{	color:#0000CC;	}
@@ -89,19 +56,6 @@ ul.less				{	}	/*	Lista bez bulletów	*/
 .correction			{	text-decoration:line-through;	}
 .explanation		{	text-decoration:underline; }
 
-.cloud
-{
-	position:absolute;
-	display:none;
-	max-width:320px;
-	left:128px;
-	top:24px;
-	border:1px solid black;
-	background-color:#e4edee;
-	padding:8px;
-}
-
-p.caution:before	{	content: "Uwaga: ";	font-weight:bold;	}
 p.todo:before		{	content: "TODO: ";	}
 
 p.caution			{	}
