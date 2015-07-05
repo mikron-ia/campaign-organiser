@@ -107,9 +107,14 @@ class Page
 	 */
     private function preparePath($file)
     {
-        $uri = "data/" . $file . ".md";
-        if (file_exists($uri)) {
-            $path = $uri;
+		$baseDirectory = "data";
+        $uriBasic = $baseDirectory . "/" . $file . ".md";
+		$uriComplicated = $baseDirectory . "/" . str_replace('-', '/', $file) . ".md";
+
+        if (file_exists($uriComplicated)) {
+            $path = $uriComplicated;
+        } elseif (file_exists($uriBasic)) {
+            $path = $uriBasic;
         } else {
             $path = null;
         }
