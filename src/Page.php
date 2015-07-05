@@ -14,9 +14,9 @@ class Page
         $baseUrl = $req->getUrl()."".$req->getRootUri()."/";
 
         $parser = new Parsedown();
-        $path = "data/" . $file . ".md";
+        $path = $this->preparePath($file);
 
-        if (file_exists($path)) {
+        if ($path) {
             $text = file_get_contents($path);
 
             $content = $this->render(ucfirst($file), $parser->text($text), $baseUrl);
@@ -68,5 +68,21 @@ class Page
     private function replaceDates($text, $date)
     {
         return str_replace('{date}', $date, $text);
+    }
+
+	/**
+	 * Locates file and provides proper path
+	 * @param string $file
+	 * @return mixed String with proper path to existing file, or null if not found
+	 */
+    private function preparePath($file)
+    {
+        $uri = "data/" . $file . ".md";
+        if (file_exists($uri)) {
+            $path = $uri;
+        } else {
+            $path = null;
+        }
+        return $path;
     }
 }
