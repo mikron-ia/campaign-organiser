@@ -8,6 +8,11 @@ class Page
 {
     private $content;
 
+	/**
+	 * Class constructor
+	 * @param string $file Name of the file to be processed and parsed
+	 * @param Slim\Slim $app Slim application object
+	 */
     public function __construct($file, $app)
     {
         $req = $app->request;
@@ -31,6 +36,14 @@ class Page
 
     }
 
+	/**
+	 * Simple renderer for the page
+	 * @param string $title Page title
+	 * @param string $body Page body content
+	 * @param string $baseUrl Base URL used for CSS file
+	 * @return string Page to be displayed
+	 * @todo Replace with proper view
+	 */
     public function render($title, $body, $baseUrl)
     {
         return '<!DOCTYPE HTML>
@@ -46,6 +59,12 @@ class Page
 </html>';
     }
 
+	/**
+	 * Returns 404 page
+	 * @param Parsedown $parser Data object
+	 * @param string $baseUrl Base URL
+	 * @return string 404 page
+	 */
     public function notFound($parser, $baseUrl)
     {
         $text = file_get_contents("404.md");
@@ -53,18 +72,29 @@ class Page
     }
 
     /**
-     * @return string
-     */
+	 * Parsed content getter
+	 * @return string
+	 */
     public function getContent()
     {
         return $this->content;
     }
 
+	/**
+	 * Magic method implementation
+	 * @return string
+	 */
     public function __toString()
     {
         return $this->getContent();
     }
 
+	/**
+	 * Replaces {date} with provided string
+	 * @param string $text Text to be worked
+	 * @param string $date String to replace {date} tag
+	 * @return string
+	 */
     private function replaceDates($text, $date)
     {
         return str_replace('{date}', $date, $text);
