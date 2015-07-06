@@ -13,7 +13,6 @@ It is possible to store files in directories and still access them. `data/exampl
 * Configurability for project
 * Config file for data
 * Better handling of versioning and titles
-* Individual CSS files for projects
 
 ### Optional goals
 
