@@ -46,12 +46,19 @@ class Page
      */
     public function render($title, $body, $baseUrl)
     {
+        if (file_exists('data/style.css')) {
+            $additionalCSS = $baseUrl . 'data/style.css';
+        } else {
+            $additionalCSS = '';
+        }
+
         return '<!DOCTYPE HTML>
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<link rel="stylesheet" href="' . $baseUrl . 'style.css" type="text/css">
-	<title>' . $title . '</title>
+	<link rel="stylesheet" href="' . $baseUrl . 'style.css" type="text/css">'
+        . (!empty($additionalCSS) ? '<link rel="stylesheet" href="' . $additionalCSS . '" type="text/css">' : '')
+        . '<title>' . $title . '</title>
 </head>
 <body>
 ' . $body . '
