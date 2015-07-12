@@ -1,0 +1,6 @@
+#!/bin/bash
+
+if [ "$1" = "init" ]; then
+	mkdir ../data/story/mission/$2
+	cp templates/mission/* ../data/story/mission/$2/
+fi

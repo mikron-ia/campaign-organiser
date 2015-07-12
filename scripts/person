@@ -1,0 +1,6 @@
+#!/bin/bash
+
+if [ "$1" = "init" ]; then
+	mkdir ../data/person/$2
+	cp templates/person/* ../data/person/$2/
+fi
