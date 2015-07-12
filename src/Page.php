@@ -33,6 +33,7 @@ class Page
 				'baseForShortFilenames' => $this->prepareBaseForShortFilenames($file),
 				'constTagReplacements' => [
 					'date' => date("Y-m-d H:i", filemtime($path)),
+					'penultimate-segment' => $this->getPenultimateSegment($file),
 				]
             ];
 
@@ -143,16 +144,32 @@ class Page
     }
 
 	/**
+	 * Prepares array of directory and filenames
+	 * @param string $file
+	 * @return string[]
+	 */
+	private function prepareFilePath($file)
+	{
+		$split = explode('-',$file);
+		array_pop($split);
+		return $split;
+	}
+
+	/**
 	 * Prepares base for short filenames, suitable for includes
 	 * @param string $file Filename for data extraction
 	 * @return string Base for short filenames - everything but the last segment
 	 */
 	private function prepareBaseForShortFilenames($file)
 	{
-		$spread = explode('-',$file);
-		array_pop($spread);
-		$cut = implode('-',$spread);
-
+		$split = $this->prepareFilePath($file);
+		$cut = implode('-', $split);
 		return $cut;
+	}
+
+	private function getPenultimateSegment($file)
+	{
+		$split = $this->prepareFilePath($file);
+		return array_pop($split);
 	}
 }
