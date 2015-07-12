@@ -23,27 +23,64 @@ class Processor
         return $this->result;
     }
 
+	/**
+	 * Formats the text via tag replacements and sets it to result field
+	 */
     private function prepareResult()
     {
-        $replacedDates = $this->replaceDates($this->original, $this->data['date']);
-        $replacedIncludes = $this->replaceIncludes($replacedDates);
+        $contentWithReplacedConsts = $this->replaceConst($this->original, $this->data['constTagReplacements']);
+        $contentWithReplacedIncludes = $this->replaceIncludes($contentWithReplacedConsts, $this->data['baseForShortFilenames']);
 
-        $this->result = $replacedIncludes;
+        $this->result = $contentWithReplacedIncludes;
     }
 
     /**
      * Replaces {date} with provided string
      * @param string $text Text to be worked
-     * @param string $date String to replace {date} tag
+     * @param string[] $constTagReplacements Replacement data in form of 'tag' => 'replacement'
      * @return string
      */
-    private function replaceDates($text, $date)
+    private function replaceConst($text, $constTagReplacements)
     {
-        return str_replace('{date}', $date, $text);
+		foreach($constTagReplacements as $tag => $replacement) {
+			$text = str_replace('{'.$tag.'}', $replacement, $text);
+		}
+		return $text;
     }
 
-    private function replaceIncludes($text)
+	/**
+	 *
+	 * @param string $text Text to be worked
+	 * @param string $path Base path for short includes
+	 * @return string
+	 */
+    private function replaceIncludes($text, $path)
     {
+		$short = [];
+		$long = [];
+        preg_match_all('@{include-short:(.+?)}@', $text, $short, PREG_SET_ORDER);
+		preg_match_all('@{include-long:(.+?)}@', $text, $long, PREG_SET_ORDER);
+
+		$filenames = [];
+
+		foreach($short as $row) {
+			if(!empty($path)) {
+				$filename = $path.'-'.$row[1];
+			} else {
+				$filename = $row[1];
+			}
+			$filenames[$row[0]] = $filename;
+		}
+
+		foreach($long as $row) {
+			$filenames[$row[0]] = $filename;
+		}
+
+		foreach($filenames as $tag => $filename) {
+			$page = new Page($filename, null);
+			$text = str_replace($tag, $page->getBody(), $text);
+		}
+
         return $text;
     }
 }

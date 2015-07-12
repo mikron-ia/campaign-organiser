@@ -14,11 +14,15 @@ class Page
      * @param string $file Name of the file to be processed and parsed
      * @param Slim\Slim $app Slim application object
      */
-    public function __construct($file, $app)
+    public function __construct($file, $app = null)
     {
-        $req = $app->request;
-        $baseUrl = $req->getUrl() . "" . $req->getRootUri() . "/";
-                
+		if($app) {
+			$req = $app->request;
+			$baseUrl = $req->getUrl() . "" . $req->getRootUri() . "/";
+		} else {
+			$baseUrl = null;
+		}
+
         $parser = new Parsedown();
         $path = $this->preparePath($file);
 
@@ -30,7 +34,10 @@ class Page
             $content = $this->render(ucfirst($file), $this->body, $baseUrl);
 
             $dataForProcessor = [
-                'date' => date("Y-m-d H:i", filemtime($path)),
+				'baseForShortFilenames' => $this->prepareBaseForShortFilenames($file),
+				'constTagReplacements' => [
+					'date' => date("Y-m-d H:i", filemtime($path)),
+				]
             ];
 
             $processor = new Processor($content, $dataForProcessor);
@@ -87,12 +94,21 @@ class Page
     }
 
     /**
-     * Parsed content getter
+     * Full-packed content getter
      * @return string
      */
     public function getContent()
     {
         return $this->content;
+    }
+
+    /**
+     * Parsed content getter
+     * @return string
+     */
+    public function getBody()
+    {
+        return $this->body;
     }
 
     /**
@@ -125,4 +141,18 @@ class Page
 
         return $path;
     }
+
+	/**
+	 * Prepares base for short filenames, suitable for includes
+	 * @param string $file Filename for data extraction
+	 * @return string Base for short filenames - everything but the last segment
+	 */
+	private function prepareBaseForShortFilenames($file)
+	{
+		$spread = explode('-',$file);
+		array_pop($spread);
+		$cut = implode('-',$spread);
+
+		return $cut;
+	}
 }
