@@ -7,6 +7,7 @@ use \Parsedown;
 class Page
 {
     private $content;
+    private $body;
 
     /**
      * Class constructor
@@ -17,20 +18,26 @@ class Page
     {
         $req = $app->request;
         $baseUrl = $req->getUrl() . "" . $req->getRootUri() . "/";
-
+                
         $parser = new Parsedown();
         $path = $this->preparePath($file);
 
         if ($path) {
             $text = file_get_contents($path);
 
-            $content = $this->render(ucfirst($file), $parser->text($text), $baseUrl);
-            $date = date("Y-m-d H:i", filemtime($path));
+            $this->body = $parser->text($text);
 
-            $replacedDates = $this->replaceDates($content, $date);
+            $content = $this->render(ucfirst($file), $this->body, $baseUrl);
 
-            $this->content = $replacedDates;
+            $dataForProcessor = [
+                'date' => date("Y-m-d H:i", filemtime($path)),
+            ];
+
+            $processor = new Processor($content, $dataForProcessor);
+
+            $this->content = $processor->getResult();
         } else {
+            $this->body = "[BODY NOT FOUND]";
             $this->content = $this->notFound($parser, $baseUrl);
         }
 
@@ -95,17 +102,6 @@ class Page
     public function __toString()
     {
         return $this->getContent();
-    }
-
-    /**
-     * Replaces {date} with provided string
-     * @param string $text Text to be worked
-     * @param string $date String to replace {date} tag
-     * @return string
-     */
-    private function replaceDates($text, $date)
-    {
-        return str_replace('{date}', $date, $text);
     }
 
     /**
