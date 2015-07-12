@@ -128,3 +128,12 @@ del {
     color: #ff0000;
     text-decoration: line-through;
 }
+
+div.split
+{
+    display:block;
+    float:left;
+    overflow:visible;
+    width:48%;
+    margin:auto;
+}
