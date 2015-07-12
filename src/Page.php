@@ -29,10 +29,6 @@ class Page
         if ($path) {
             $text = file_get_contents($path);
 
-            $this->body = $parser->text($text);
-
-            $content = $this->render(ucfirst($file), $this->body, $baseUrl);
-
             $dataForProcessor = [
 				'baseForShortFilenames' => $this->prepareBaseForShortFilenames($file),
 				'constTagReplacements' => [
@@ -40,9 +36,13 @@ class Page
 				]
             ];
 
-            $processor = new Processor($content, $dataForProcessor);
+            $processor = new Processor($text, $dataForProcessor);
+			$processed = $processor->getResult();
 
-            $this->content = $processor->getResult();
+            $this->body = $parser->text($processed);
+            $content = $this->render(ucfirst($file), $this->body, $baseUrl);
+
+            $this->content = $content;
         } else {
             $this->body = "[BODY NOT FOUND]";
             $this->content = $this->notFound($parser, $baseUrl);
