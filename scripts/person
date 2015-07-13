@@ -4,3 +4,11 @@ if [ "$1" = "init" ]; then
 	mkdir ../data/person/$2
 	cp templates/person/* ../data/person/$2/
 fi
+
+if [ "$1" = "refresh" ]; then
+	cd templates/person
+	for d in ../../../data/person/$2/*; do
+		cp -v `ls | egrep -v '^\_.*$'` $d
+		#echo "$d"
+	done
+fi
