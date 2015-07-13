@@ -16,12 +16,12 @@ class Page
      */
     public function __construct($file, $app = null)
     {
-		if($app) {
-			$req = $app->request;
-			$baseUrl = $req->getUrl() . "" . $req->getRootUri() . "/";
-		} else {
-			$baseUrl = null;
-		}
+        if ($app) {
+            $req = $app->request;
+            $baseUrl = $req->getUrl() . "" . $req->getRootUri() . "/";
+        } else {
+            $baseUrl = null;
+        }
 
         $parser = new Parsedown();
         $path = $this->preparePath($file);
@@ -29,16 +29,19 @@ class Page
         if ($path) {
             $text = file_get_contents($path);
 
+            $baseForShortFilenames = $this->prepareBaseForShortFilenames($file);
+
             $dataForProcessor = [
-				'baseForShortFilenames' => $this->prepareBaseForShortFilenames($file),
-				'constTagReplacements' => [
-					'date' => date("Y-m-d H:i", filemtime($path)),
-					'penultimate-segment' => $this->getPenultimateSegment($file),
-				]
+                'baseForShortFilenames' => $baseForShortFilenames,
+                'constTagReplacements' => [
+                    'date' => date("Y-m-d H:i", filemtime($path)),
+                    'penultimate-segment' => $this->getPenultimateSegment($file),
+                    'base-uri' => $baseForShortFilenames,
+                ]
             ];
 
             $processor = new Processor($text, $dataForProcessor);
-			$processed = $processor->getResult();
+            $processed = $processor->getResult();
 
             $this->body = $parser->text($processed);
             $content = $this->render(ucfirst($file), $this->body, $baseUrl);
@@ -143,33 +146,36 @@ class Page
         return $path;
     }
 
-	/**
-	 * Prepares array of directory and filenames
-	 * @param string $file
-	 * @return string[]
-	 */
-	private function prepareFilePath($file)
-	{
-		$split = explode('-',$file);
-		array_pop($split);
-		return $split;
-	}
+    /**
+     * Prepares array of directory and filenames
+     * @param string $file
+     * @return string[]
+     */
+    private function prepareFilePath($file)
+    {
+        $split = explode('-', $file);
+        array_pop($split);
 
-	/**
-	 * Prepares base for short filenames, suitable for includes
-	 * @param string $file Filename for data extraction
-	 * @return string Base for short filenames - everything but the last segment
-	 */
-	private function prepareBaseForShortFilenames($file)
-	{
-		$split = $this->prepareFilePath($file);
-		$cut = implode('-', $split);
-		return $cut;
-	}
+        return $split;
+    }
 
-	private function getPenultimateSegment($file)
-	{
-		$split = $this->prepareFilePath($file);
-		return array_pop($split);
-	}
+    /**
+     * Prepares base for short filenames, suitable for includes
+     * @param string $file Filename for data extraction
+     * @return string Base for short filenames - everything but the last segment
+     */
+    private function prepareBaseForShortFilenames($file)
+    {
+        $split = $this->prepareFilePath($file);
+        $cut = implode('-', $split);
+
+        return $cut;
+    }
+
+    private function getPenultimateSegment($file)
+    {
+        $split = $this->prepareFilePath($file);
+
+        return array_pop($split);
+    }
 }
